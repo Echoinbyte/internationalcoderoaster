@@ -35,12 +35,12 @@ function MainPageComponent() {
   return (
     <main>
       <nav className="w-full h-16 bg-slate-800 flex flex-row justify-between items-center mx-auto">
-        <div className="text-slate-200 text-2xl font-bold ml-4">
+        <div className="text-slate-200 text-xl md:text-2xl font-bold ml-4">
           International Code Roaster
         </div>
         <div className="flex flex-row items-center mr-4">
           <Select defaultValue={language} onValueChange={setLanguage}>
-            <SelectTrigger className="w-[180px] bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700 focus-within:ring-2 focus-within:ring-amber-600 focus-within:border-amber-600">
+            <SelectTrigger className="bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700 focus-within:ring-2 focus-within:ring-amber-600 focus-within:border-amber-600">
               <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent>
