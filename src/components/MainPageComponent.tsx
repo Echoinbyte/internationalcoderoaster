@@ -11,11 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useDebounce } from "use-debounce";
 import { roastCode } from "@/helper/Roaster";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "./ui/resizable";
+import { showRoastToast } from "@/helper/showRoastToast";
 
 function MainPageComponent() {
   const [language, setLanguage] = useState<string>("javascript");
@@ -23,10 +19,16 @@ function MainPageComponent() {
     "// Get your code roasted"
   );
   const [code] = useDebounce<string | undefined>(realTimeCode, 200);
-  const [roastedText, setRoastedText] = useState<string>("");
+  const [existingRoasts, setExistingRoasts] = useState<string[]>([""]);
 
   useEffect(() => {
-    setRoastedText(roastCode(code));
+    const roasts = roastCode(code);
+    const newRoasts = roasts.filter((roast) => !existingRoasts.includes(roast));
+    newRoasts.forEach((roast) => {
+      showRoastToast(roast);
+    });
+    setExistingRoasts((prevRoasts) => [...prevRoasts, ...newRoasts]);
+
     console.log("Roasted Code: ", roastCode(code));
   }, [code]);
 
@@ -48,32 +50,19 @@ function MainPageComponent() {
           </Select>
         </div>
       </nav>
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={60}>
-          <Editor
-            height="100vh"
-            language={language}
-            defaultLanguage={language}
-            defaultValue="// Get your code roasted"
-            options={{
-              selectOnLineNumbers: true,
-            }}
-            theme="vs-dark"
-            onChange={(value) => {
-              setRealTimeCode(value);
-            }}
-          />
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel defaultSize={40}>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: roastedText,
-            }}
-            className="whitespace-pre-line"
-          />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+      <Editor
+        height="100vh"
+        language={language}
+        defaultLanguage={language}
+        defaultValue="// Get your code roasted"
+        options={{
+          selectOnLineNumbers: true,
+        }}
+        theme="vs-dark"
+        onChange={(value) => {
+          setRealTimeCode(value);
+        }}
+      />
     </main>
   );
 }
